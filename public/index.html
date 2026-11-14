@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#070a13" />
+  <title>Renk Çarkı — Online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-screen="home">
+  <div class="bg-scene" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="blob blob-4"></span>
+    <span class="grid-overlay"></span>
+  </div>
+
+  <div id="conn-banner" class="conn-banner" role="status"></div>
+  <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+
+  <main class="app">
+    <!-- ============================== ANA MENÜ ============================== -->
+    <section class="screen screen-home is-active" id="screen-home">
+      <div class="home-wrap">
+        <div class="brand">
+          <div class="brand-dots" aria-hidden="true">
+            <span style="--c:#ff4d8d"></span>
+            <span style="--c:#ffb648"></span>
+            <span style="--c:#b8f23d"></span>
+            <span style="--c:#33d6ff"></span>
+            <span style="--c:#c77dff"></span>
+          </div>
+          <h1>Renk <span class="grad-text">Çarkı</span></h1>
+          <p class="tagline">Hedefi gör. Çarktan en yakın rengi yakala.</p>
+        </div>
+
+        <div class="panel home-panel">
+          <label class="field-label" for="name-input">Takma adın</label>
+          <input id="name-input" class="text-input" type="text" maxlength="16" placeholder="Oyuncu adı" autocomplete="nickname" />
+          <button id="btn-create" class="btn btn-primary btn-block">Oda Oluştur</button>
+
+          <div class="divider"><span>veya kodla katıl</span></div>
+
+          <div class="join-row">
+            <input id="code-input" class="text-input code-input" type="text" maxlength="4" placeholder="ODA KODU" autocomplete="off" spellcheck="false" />
+            <button id="btn-join" class="btn btn-ghost">Katıl</button>
+          </div>
+
+          <p class="hint">2–6 oyuncu · ayarlanabilir tur · 16.7 milyon renk · çark + parlaklık</p>
+        </div>
+
+        <div class="howto">
+          <div><b>1</b><span>Odaya gir</span></div>
+          <div><b>2</b><span>Hedefi gör</span></div>
+          <div><b>3</b><span>En yakın rengi seç</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ LOBİ ================================ -->
+    <section class="screen screen-lobby" id="screen-lobby">
+      <div class="lobby-wrap">
+        <button id="btn-leave-lobby" class="btn btn-subtle back-btn">← Odadan ayrıl</button>
+
+        <div class="panel lobby-panel">
+          <div class="lobby-head">
+            <div>
+              <p class="overline">ODA KODU</p>
+              <div class="room-code-row">
+                <span id="room-code" class="room-code">----</span>
+                <button id="btn-copy" class="icon-btn" title="Oda kodunu kopyala" aria-label="Oda kodunu kopyala">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+                    <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="lobby-badge"><span class="live-dot"></span> Lobi</div>
+          </div>
+
+          <p class="lobby-sub">Arkadaşların bu kodla katılsın. En az 2 oyuncuyla başlayabilirsin.</p>
+
+          <div class="round-setting">
+            <div class="round-setting-head">
+              <span>TUR SAYISI</span>
+              <small id="round-setting-hint">Oda sahibi belirler</small>
+            </div>
+            <div class="round-options" id="round-options" role="group" aria-label="Tur sayısı">
+              <button type="button" class="round-option" data-rounds="3">3</button>
+              <button type="button" class="round-option" data-rounds="5">5</button>
+              <button type="button" class="round-option" data-rounds="10">10</button>
+              <button type="button" class="round-option" data-rounds="20">20</button>
+              <button type="button" class="round-option" data-rounds="0">∞</button>
+            </div>
+          </div>
+
+          <div class="lobby-players-head">
+            <span>Oyuncular</span>
+            <span id="lobby-count">0 / 6</span>
+          </div>
+          <ul id="lobby-players" class="lobby-players"></ul>
+
+          <div class="lobby-actions">
+            <button id="btn-start" class="btn btn-primary btn-block" disabled>Oyunu Başlat</button>
+            <p id="lobby-status" class="lobby-status">Oda sahibinin başlatması bekleniyor…</p>
+          </div>
+        </div>
+
+        <div class="lobby-tips">
+          <div class="tip">
+            <span class="tip-icon">🎯</span>
+            <div><b>Rastgele hedef</b><p>Her tur 16.7 milyon renkten biri seçilir; hedefi çarkta yakala.</p></div>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">🏆</span>
+            <div><b>En yakın kazanır</b><p>1. oyuncu 3, 2. oyuncu 2, 3. oyuncu 1 puan alır. Tur sayısını oda sahibi belirler; sınırsız da seçilebilir.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ OYUN ================================ -->
+    <section class="screen screen-game" id="screen-game">
+      <div class="game-hud">
+        <div class="hud-chip round-chip"><span>TUR</span><b id="hud-round">1/5</b></div>
+
+        <div class="target-card" id="target-card">
+          <span class="target-label">HEDEF RENK</span>
+          <span class="target-swatch" id="target-swatch"></span>
+          <strong id="target-name">—</strong>
+        </div>
+
+        <div class="hud-chip timer-chip"><b id="hud-timer">12.0</b><span>sn</span></div>
+        <button id="btn-leave-game" class="btn btn-subtle quit-btn" title="Odadan ayrıl">Ayrıl</button>
+      </div>
+
+      <div class="score-strip" id="score-strip" aria-label="Skor tablosu"></div>
+
+      <div class="game-stage wheel-stage" id="game-stage">
+        <canvas id="wheel-canvas"></canvas>
+        <p class="wheel-caption" id="wheel-caption">Çarktan rengini seç</p>
+        <button id="btn-end-game" class="end-game-btn" type="button" hidden>Oyunu Bitir</button>
+
+        <div class="game-overlay" id="game-overlay" aria-hidden="true">
+          <div class="overlay-card" id="overlay-card"></div>
+        </div>
+      </div>
+
+      <div class="wheel-controls" id="wheel-controls">
+        <div class="pick-panel" id="pick-panel">
+          <div class="pick-preview">
+            <span class="pick-swatch" id="pick-swatch"></span>
+            <div class="pick-meta">
+              <span>SEÇİMİN</span>
+              <strong id="pick-hex">Renk seç</strong>
+            </div>
+          </div>
+
+          <div class="value-control">
+            <div class="value-head"><span>PARLAKLIK</span><b id="value-label">%100</b></div>
+            <input id="value-slider" class="value-slider" type="range" min="0" max="100" value="100" aria-label="Parlaklık" />
+          </div>
+
+          <button id="btn-lock" class="btn btn-primary lock-btn" disabled>Tahmini Kilitle</button>
+        </div>
+
+        <div class="reveal-panel" id="reveal-panel" hidden>
+          <div class="reveal-head">
+            <span>EN YAKIN 4 RENK</span>
+            <span id="reveal-next">Sonraki tur…</span>
+          </div>
+          <div class="reveal-grid" id="reveal-grid"></div>
+          <div class="reveal-foot">
+            <span class="reveal-target">
+              HEDEF
+              <span class="mini-dot" id="reveal-target-dot"></span>
+              <b id="reveal-target-hex">#000000</b>
+            </span>
+            <span class="reveal-note" id="reveal-note"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
